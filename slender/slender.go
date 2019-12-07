@@ -43,17 +43,17 @@ func (s *SlenderImage) Make() error {
 	}
 	defer file.Close()
 
-	orgImage, format, err := image.Decode(file)
+	src, format, err := image.Decode(file)
 	if err != nil {
 		return err
 	}
 
-	rct := orgImage.Bounds()
-	dstImage := image.NewRGBA(image.Rect(0, 0, rct.Dx()/2, rct.Dy()))
+	rct := src.Bounds()
+	dst := image.NewRGBA(image.Rect(0, 0, rct.Dx()/2, rct.Dy()))
 	draw.CatmullRom.Scale(
-		dstImage,
-		dstImage.Bounds(),
-		orgImage,
+		dst,
+		dst.Bounds(),
+		src,
 		rct,
 		draw.Over,
 		nil,
@@ -67,15 +67,15 @@ func (s *SlenderImage) Make() error {
 
 	switch format {
 	case "jpeg":
-		if err := jpeg.Encode(slenderFile, dstImage, &jpeg.Options{Quality: 100}); err != nil {
+		if err := jpeg.Encode(slenderFile, dst, &jpeg.Options{Quality: 100}); err != nil {
 			return err
 		}
 	case "gif":
-		if err := gif.Encode(slenderFile, dstImage, nil); err != nil {
+		if err := gif.Encode(slenderFile, dst, nil); err != nil {
 			return err
 		}
 	case "png":
-		if err := png.Encode(slenderFile, dstImage); err != nil {
+		if err := png.Encode(slenderFile, dst); err != nil {
 			return err
 		}
 	default:
