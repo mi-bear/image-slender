@@ -81,7 +81,5 @@ func (s *SlenderImage) Make() error {
 	default:
 		return errors.New("Unsupported format")
 	}
-
-	fmt.Println(s.Name(), "is slender.")
 	return nil
 }
