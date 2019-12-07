@@ -23,6 +23,7 @@ func execute() error {
 	images := Config.Images
 
 	for _, image := range images {
+		image := image
 		slenderImage := slender.SlenderImage(image)
 		if err := slenderImage.Make(); err != nil {
 			return err
