@@ -6,6 +6,7 @@ import (
 
 	"github.com/jinzhu/configor"
 	"github.com/mi-bear/image-slender/slender"
+	"golang.org/x/sync/errgroup"
 )
 
 var Config = struct {
@@ -22,11 +23,18 @@ func execute() error {
 	configor.Load(&Config, "images.yaml")
 	images := Config.Images
 
+	eg := &errgroup.Group{}
+
 	for _, image := range images {
-		slenderImage := slender.SlenderImage(image)
-		if err := slenderImage.Make(); err != nil {
-			return err
-		}
+		image := image
+		eg.Go(func() error {
+			slenderImage := slender.SlenderImage(image)
+			return slenderImage.Make()
+		})
+	}
+
+	if err := eg.Wait(); err != nil {
+		return err
 	}
 	return nil
 }
