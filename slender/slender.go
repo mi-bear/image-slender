@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/pkg/errors"
 
@@ -32,6 +33,9 @@ func (s *SlenderImage) Name() string {
 }
 
 func (s *SlenderImage) Make() error {
+	// 3秒
+	time.Sleep(3 * time.Second)
+
 	path, dir, err := s.Path()
 	if err != nil {
 		return err
